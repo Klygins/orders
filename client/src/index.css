@@ -1,0 +1,38 @@
+.top-bar{
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 5em ;
+    background-color: #3E3E3E;
+}
+.order{
+    margin-left: 10%;
+    margin-top: 20px;
+    width: 80%;
+}
+.take-button{
+    background-color: rgb(224, 225, 226);
+    border: 1px solid rgb(224, 225, 226);
+    color: rgb(95, 95, 95);
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 4px;
+}
+.message{
+    position: fixed;
+    z-index: 10000;
+    padding: 1em;
+    right: 110px;
+    top: 75px;
+    border-radius: 4px;
+    width:350px;
+}
+#message-red{
+    background-color: #f7cfd5;
+    color:#f52323;
+}
+#message-blue{
+    background-color: #bfddff;
+    color: #2f5c92;
+}
