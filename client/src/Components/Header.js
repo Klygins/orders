@@ -79,8 +79,7 @@ const SwitchButtons = (props) => {
     }
 }
 
-const Header = (props) => {
-    const role = props.role
+const Header = ({ role }) => {
     return (
         <div className='top-bar'>
             <SwitchButtons role={role} />

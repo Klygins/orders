@@ -9,18 +9,17 @@ const AlertToReturn = () => {
             return (
                 <Transition visible={alert.alertVisiable} animation='fade' duration={alert.alertVisiable ? 500 : 1000}>
                     <div>
-                        <div class='message' id='message-blue'>
+                        <div className='message' id='message-blue'>
                             {alert.alertMessage}
                         </div>
                     </div>
                 </Transition>
             )
-        }
-        else {
+        } else {
             return (
                 <Transition visible={alert.alertVisiable} animation='fade' duration={alert.alertVisiable ? 500 : 1000}>
                     <div>
-                        <div class='message' id='message-red'>
+                        <div className='message' id='message-red'>
                             {alert.alertMessage}
                         </div>
                     </div>

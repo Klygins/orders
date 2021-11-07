@@ -4,7 +4,7 @@ import {
     Switch,
     Route
 } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 
 import HomePage from './Components/HomePage'
@@ -13,7 +13,8 @@ import NewOrder from './Components/NewOrder'
 import Header from './Components/Header'
 import PersonalSpace from './Components/PersonalSpace'
 import * as api from './api/index'
-import {setRole} from './slices/roleSlice'
+import { setRole } from './slices/roleSlice'
+import config from './config';
 
 function App() {
     const role = useSelector(state => state.role.role)
@@ -27,23 +28,15 @@ function App() {
         })
     }, [])
     //0 == unauth 1== booster 2== giveOrders
-    
+
     return (
         <Router>
             <Header role={role} />
             <Switch>
-                <Route exact path='/'>
-                    <HomePage />
-                </Route>
-                <Route path='/orders'>
-                    <Orders />
-                </Route>
-                <Route path='/new-order'>
-                    <NewOrder />
-                </Route>
-                <Route path='/personal-space'>
-                    <PersonalSpace role={role} />
-                </Route>
+                <Route exact path={config.pages.home} component={HomePage} />
+                <Route path={config.pages.orders} component={Orders} />
+                <Route path={config.pages.newOrder} component={NewOrder} />
+                <Route path={config.pages.personalSpace} component={PersonalSpace} />
             </Switch>
         </Router>
     );

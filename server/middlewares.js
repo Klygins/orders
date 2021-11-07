@@ -21,12 +21,12 @@ const isOrderMadeByOG = (req, res, next) => {
         user = user.username
         if (err) return res.sendStatus(403)
         UserModel.findOne({ 'username': user }, (err, userdb) => {
-            if (err) {
+            if (err)
                 console.log(err);
-            }
-            if (userdb.isBooster == true) {
+            
+            if (userdb.isBooster) 
                 return res.sendStatus(403)
-            }
+                
             else {
                 req.body.createdBy = user
                 next()

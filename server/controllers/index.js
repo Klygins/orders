@@ -2,6 +2,7 @@ const UserModel = require('../models/user.js')
 const OrderModel = require('../models/order.js')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const config = require('../config')
 require('dotenv').config()
 
 const getRole = (req, res) => {
@@ -16,14 +17,10 @@ const getRole = (req, res) => {
                 console.log(err);
                 return res.sendStatus(401)
             }
-            if (userdb) {
-                if (userdb.isBooster == true) {
-                    return res.json(1)
-                }
-                else {
-                    return res.json(2)
-                }
-            } else return res.sendStatus(404)
+            if (userdb)
+                return res.json(userdb.isBooster ? 1 : 2)
+            else
+                return res.sendStatus(404)
         })
     })
 }
@@ -45,7 +42,8 @@ const login = (req, res) => {
         if (err) throw err;
         if (!userdb) return res.sendStatus(401);
 
-        console.log('Trying to login user ' + username + ' with password ' + password);
+        const hashedPassword = bcrypt.hashSync(password, 7);
+        console.log('Trying to login user ' + username + ' with password ' + hashedPassword);
         bcrypt.compare(password, userdb.password, (err, bcrypt_result) => {
             if (err) throw err;
             if (bcrypt_result == true) {
@@ -90,9 +88,9 @@ const getProfile = (req, res) => {
         const ordersToReturn = []
         OrderModel.find({ booster: reqUsername }, (err, orders) => {
             if (err) console.log(err);
-            console.log(orders, process.env.PERCENT);
+            console.log(orders, config.percent);
             for (let index = 0; index < orders.length; index++) {
-                orders[index].payment = orders[index].payment * process.env.PERCENT
+                orders[index].payment = orders[index].payment * config.percent
                 ordersToReturn.push(orders[index])
             }
             res.json(ordersToReturn)

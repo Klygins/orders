@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Segment, Modal, Button, Transition } from 'semantic-ui-react'
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { setAlert } from "../slices/alertSlice";
 import * as api from '../api/index'
+import { useHistory } from "react-router-dom";
+
+import config from '../config'
 
 const Order = (props) => {
     const dispatch = useDispatch()
+    const [open, setOpen] = useState(false)
+
     console.log(props.dateDone);
 
     const displayAlert = (isBlue = true, text = 'placeholder', timeOutMS = 4000) => {
@@ -21,8 +26,8 @@ const Order = (props) => {
             }))
         }, timeOutMS)
     }
+    let history = useHistory();
 
-    const [open, setOpen] = React.useState(false)
     return (
         <div className='order'>
             <Segment.Group horizontal>
@@ -36,18 +41,15 @@ const Order = (props) => {
                     onOpen={() => setOpen(true)}
                     open={open}
                     trigger={<div style={{ paddingTop: '0.5em', paddingRight: '1em' }}>
-                        <Button size='small'
-                            positive>
-                            take order
-                        </Button>
+                        <Button size='small' positive content='Take Order' />
                     </div>}>
-                    <h2 style={{ textAlign: 'center', marginTop: '20px', marginBottom: '20px' }}>confirm</h2>
+                    <h2 style={{ textAlign: 'center', marginTop: '20px', marginBottom: '20px' }}>{"Confirm"}</h2>
                     <div style={{ textAlign: 'center', marginBottom: '20px', fontSize: '110%' }}>
-                        {props.from}-{props.to} deadline:
+                        {props.from} - {props.to}. Deadline:
                         {(props.to - props.from) < 300 ?
-                            <span>{Math.trunc(((props.to - props.from) / 150) * 24)}hours</span>
+                            <span> {Math.trunc(((props.to - props.from) / 150) * 24)} hours</span>
                             :
-                            <span>{Math.trunc((props.to - props.from) / 150)} days</span>
+                            <span> {Math.trunc((props.to - props.from) / 150)} days</span>
                         }
                     </div>
                     <div style={{ marginLeft: '43.6%', marginBottom: '10px' }}>
@@ -59,14 +61,15 @@ const Order = (props) => {
                                     switch (res.status) {
                                         case 200:
                                             setOpen(false)
-                                            displayAlert(true, 'order taken succesfully', 3000)
+                                            displayAlert(true, 'Order taken succesfully', config.alertTimeout.short)
                                             console.log(res.data);
                                             break
                                         default:
                                             setOpen(false)
-                                            displayAlert(false, 'you alredy have an order', 3000)
+                                            displayAlert(false, 'You alredy have an order', config.alertTimeout.normal)
                                             break
                                     }
+                                    history.push(config.pages.personalSpace)
                                 }
                             })
                         }}

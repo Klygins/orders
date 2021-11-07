@@ -2,30 +2,38 @@ const UserModel = require('../models/user.js')
 const OrderModel = require('../models/order.js')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const config = require('../config');
 require('dotenv').config()
 
 const createOrder = (req, res) => {
     const arr = []
-    const createdBy = req.body.createdBy
-    const mmrFrom = req.body.mmrFrom
-    const mmrTo = req.body.mmrTo
-    const tokens = req.body.tokens
-    const trophyLvl = req.body.trophyLvl
-    const steamLogin = req.body.steamLogin
-    const steamPassword = req.body.steamPassword
-    const booster = req.body.booster
-    const payment = req.body.payment
-    const dateTaken = req.body.dateTaken
-    const dateDone = req.body.dateDone
-    const steamGuardCodes = req.body.steamGuardCodes
-    const isOrderInProgress = req.body.isOrderInProgress
+    const {
+        createdBy,
+        mmrFrom,
+        mmrTo,
+        tokens,
+        trophyLvl,
+        steamLogin,
+        steamPassword,
+        booster,
+        payment,
+        dateTaken,
+        dateDone,
+        steamGuardCodes,
+        isOrderInProgress
+    } = req.body
+    
+    if (mmrFrom >= mmrTo) {
+        res.statusMessage = 'MMR From >= MMR To'
+        return res.status(400).end();
+    }
+
     arr.push(mmrFrom, mmrTo, tokens, trophyLvl, payment)
     console.log('New order data: ', req.body)
-    for (let index = 0; index < arr.length; index++) {
-        if (arr[index] == null || arr[index] == '') {
-            return res.status(402).json('err')
-        }
-    }
+    for (let index = 0; index < arr.length; index++) 
+        if (arr[index] == null || arr[index] == '')
+            return res.status(401).json('err')
+
     const newOrder = new OrderModel({
         createdBy, mmrFrom, mmrTo, tokens, trophyLvl, payment,
         steamLogin: 'n/a', steamPassword: 'n/a', booster: 'n/a', steamGuardCodes: [], isOrderInProgress: false,
@@ -55,14 +63,11 @@ const getOrders = (req, res) => {
         if (err) console.log(err)
         for (let index = 0; index < activeOrders.length; index++) {
             if (!activeOrders[index].isOrderInProgress && !activeOrders[index].dateDone) {
-                activeOrders[index].payment = activeOrders[index].payment * process.env.PERCENT
+                activeOrders[index].payment = activeOrders[index].payment * config.percent
                 array.push(activeOrders[index])
             }
         }
-        if (array.length != 0)
-            res.json(array)
-        else
-            res.sendStatus(404)
+        return res.json(array)
     })
 }
 
