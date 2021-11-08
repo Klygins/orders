@@ -82,7 +82,6 @@ const createOrder = (req, res) => {
 const getOrders = (req, res) => {
 
     OrderModel.find({}, (err, activeOrders) => {
-        console.log(activeOrders);
         const array = []
         if (err) console.log(err)
         for (let index = 0; index < activeOrders.length; index++) {
@@ -97,7 +96,7 @@ const getOrders = (req, res) => {
 
 const markOrderAsDone = (req, res) => {
     const now = new Date()
-    console.log(req.body);
+    console.log('order', req.body.orderId, 'done');
     OrderModel.updateOne({ _id: req.body.orderId },
         {
             $set: {
