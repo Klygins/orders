@@ -2,7 +2,7 @@ module.exports = {
     alertTimeout: {
         long: 15_000,
         normal: 10_000,
-        short: 7_000
+        short: 4_000
     },
     myDiscord: "fanta#5879",
     pages: {

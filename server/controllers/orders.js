@@ -5,6 +5,26 @@ const jwt = require('jsonwebtoken')
 const config = require('../config');
 require('dotenv').config()
 
+const sendDataToOG = (req, res) => {
+    OrderModel.updateOne({ _id: req.body.orderId },
+        {
+            $set: {
+                boosterLoggedIn: req.body.boosterLoggedIn,
+                nowMmr: req.body.nowMmr
+            }
+        }, (err, da) => {
+            if (err) {
+                console.log(err); res.sendStatus(400)
+            }
+            else {
+                if (res) {
+                    console.log(da);
+                    return res.sendStatus(200)
+                }
+            }
+        })
+}
+
 const createOrder = (req, res) => {
     const arr = []
     const {
@@ -20,9 +40,11 @@ const createOrder = (req, res) => {
         dateTaken,
         dateDone,
         steamGuardCodes,
-        isOrderInProgress
+        isOrderInProgress,
+        boosterLoggedIn,
+        nowMmr
     } = req.body
-    
+
     if (mmrFrom >= mmrTo) {
         res.statusMessage = 'MMR From >= MMR To'
         return res.status(400).end();
@@ -30,12 +52,12 @@ const createOrder = (req, res) => {
 
     arr.push(mmrFrom, mmrTo, tokens, trophyLvl, payment)
     console.log('New order data: ', req.body)
-    for (let index = 0; index < arr.length; index++) 
+    for (let index = 0; index < arr.length; index++)
         if (arr[index] == null || arr[index] == '')
             return res.status(401).json('err')
 
     const newOrder = new OrderModel({
-        createdBy, mmrFrom, mmrTo, tokens, trophyLvl, payment,
+        createdBy, mmrFrom, mmrTo, tokens, trophyLvl, payment, boosterLoggedIn: false, mmrNow: '',
         steamLogin: 'n/a', steamPassword: 'n/a', booster: 'n/a', steamGuardCodes: [], isOrderInProgress: false,
     })
     newOrder.save((err) => {
@@ -58,7 +80,9 @@ const createOrder = (req, res) => {
 }
 
 const getOrders = (req, res) => {
+
     OrderModel.find({}, (err, activeOrders) => {
+        console.log(activeOrders);
         const array = []
         if (err) console.log(err)
         for (let index = 0; index < activeOrders.length; index++) {
@@ -74,26 +98,18 @@ const getOrders = (req, res) => {
 const markOrderAsDone = (req, res) => {
     const now = new Date()
     console.log(req.body);
-    OrderModel.updateMany({},
+    OrderModel.updateOne({ _id: req.body.orderId },
         {
             $set: {
                 "isOrderInProgress": false,
                 "dateDone": now.toISOString()
             }
-        },
-        {
-            arrayFilters: [
-                {
-                    "elem._id": req.body.orderId
-                }
-            ]
         }, (err, da) => {
             if (err) console.log(err);
             if (res) {
                 return res.sendStatus(200)
             }
         })
-
 }
 
 const updateOrderData = (req, res) => {
@@ -151,4 +167,7 @@ const takeOrder = (req, res) => {
         })
 }
 
-module.exports = { createOrder, getOrders, takeOrder, deleteOrder, updateOrderData, markOrderAsDone }
+module.exports = {
+    createOrder, getOrders, takeOrder, deleteOrder, updateOrderData, markOrderAsDone,
+    sendDataToOG
+}

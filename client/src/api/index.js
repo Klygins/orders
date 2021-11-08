@@ -26,6 +26,18 @@ export const getOrders = (token, callback) =>
             callback(res)
         })
 
+export const sendDataToOG = (token, data, callback) =>
+    axios({
+        method: "POST",
+        data: data,
+        headers: { "Authorization": `Bearer ${token}` },
+        url: url + '/send-data-to-og'
+    }).then((res) => {
+        callback(res)
+    }).catch((err) => {
+        callback(err)
+    })
+
 export const updateOrderData = (token, data, callback) =>
     axios({
         method: "POST",

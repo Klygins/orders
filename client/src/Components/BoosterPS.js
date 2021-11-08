@@ -1,53 +1,88 @@
 import React, { useState, useEffect } from "react";
-import { Button, Divider, Grid, Header, Input, Segment } from 'semantic-ui-react'
+import { Button, Divider, Grid, Header, Input, Segment, Checkbox } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux';
-
 import Alert from './Alert'
 import { setOrders } from '../slices/orderSlice'
 import { setAlert } from '../slices/alertSlice'
 import * as api from '../api/index'
 import config from "../config";
 import { useHistory } from "react-router-dom";
-
 import BoosterTimer from './BoosterTimer'
 import OrderCard from "./OrderCard";
+import useInterval from "../resources/useInterval";
+import { areEqual } from "../resources/hashFunctions";
+
 
 /**
  * Component for Booster on Personal Space
  */
 const BoosterPS = () => {
+    const dispatch = useDispatch()
 
-    useEffect(() => {
-        api.getProfile(localStorage.getItem('token'), (res, err) => {
-            if (err) console.log(err);
-            if (res) {
-                console.log(res.data)
-                const array = []
-                for (let index = 0; index < res.data.length; index++) {
-                    array.push({
-                        from: res.data[index].mmrFrom, to: res.data[index].mmrTo, payment: res.data[index].payment,
-                        dateTaken: new Date(res.data[index].dateTaken), login: res.data[index].steamLogin,
-                        password: res.data[index].steamPassword, steamGuardCodes: res.data[index].steamGuardCodes,
-                        isActive: res.data[index].isOrderInProgress, dateDone: new Date(res.data[index].dateDone)
-                    })
-                }
-                setAllOrders(array)
-                for (let index = 0; index < res.data.length; index++) {
-                    if (res.data[index].isOrderInProgress && !res.data[index].dateDone) {
-                        setActiveOrder({
-                            login: res.data[index].steamLogin, password: res.data[index].steamPassword,
-                            dateTaken: new Date(res.data[index].dateTaken), to: res.data[index].mmrTo, from: res.data[index].mmrFrom
-                        })
-                        setSteamGuardCodes(res.data[index].steamGuardCodes)
-                    }
-                }
-            }
-        })
-    }, [])
-
+    const [nowMmr, setNowMmr] = useState("")
+    const [boosterLoggedIn, setBoosterLoggedIn] = useState(false)
+    const [haveChanged, setHaveChanged] = useState(true)
     const [activeOrder, setActiveOrder] = useState('blank')
     const [steamGuardCodes, setSteamGuardCodes] = useState([])
     const [allOrders, setAllOrders] = useState([])
+
+    useEffect(() => {
+        requestOrders()
+    }, [])
+
+    const requestOrders = () => {
+        api.getProfile(localStorage.getItem('token'), (res, err) => {
+            if (err) console.log(err);
+            if (res)
+                sortAndSetOrders(res)
+        })
+    }
+
+    const displayAlert = (isBlue = true, text = 'placeholder', timeOutMS = 4000) => {
+        dispatch(setAlert({
+            alertVisiable: true, isAlertColorBlue: isBlue,
+            alertMessage: text
+        }))
+        setTimeout(() => {
+            dispatch(setAlert({
+                alertVisiable: false, isAlertColorBlue: isBlue,
+                alertMessage: text
+            }))
+        }, timeOutMS)
+    }
+
+    useInterval(requestOrders, 10 * 1000)
+
+    const sortAndSetOrders = (res) => {
+        const array = []
+        for (let index = 0; index < res.data.length; index++) {
+            const order = res.data[index]
+            array.push({
+                from: order.mmrFrom, to: order.mmrTo, payment: order.payment,
+                dateTaken: new Date(order.dateTaken), login: order.steamLogin,
+                password: order.steamPassword, steamGuardCodes: order.steamGuardCodes,
+                isActive: order.isOrderInProgress, dateDone: new Date(order.dateDone)
+            })
+        }
+
+        if (!areEqual(allOrders, array) && allOrders.length !== 0)
+            displayAlert(true, 'New order data', 4000)
+
+        setAllOrders(array)
+        let bool1 = true
+        for (let index = 0; index < res.data.length; index++) {
+            const order = res.data[index]
+            if (order.isOrderInProgress && !order.dateDone) {
+                bool1 = false
+                setActiveOrder({
+                    login: order.steamLogin, password: order.steamPassword, orderId: order._id,
+                    dateTaken: new Date(order.dateTaken), to: order.mmrTo, from: order.mmrFrom
+                })
+                setSteamGuardCodes(order.steamGuardCodes)
+            }
+        }
+        if (bool1) setActiveOrder('blank')
+    }
 
     const renderSteamGuardCodes = () => {
         if (steamGuardCodes.length == 0) {
@@ -55,10 +90,8 @@ const BoosterPS = () => {
         }
         const array = []
         for (let index = 0; index < steamGuardCodes.length / 6; index++) {
-            console.log(`index: ${index}`);
             let localArray = []
             first: for (let j = 0; j < 6; j++) {
-                console.log(`j: ${j}`);
                 if (j + index * 6 >= steamGuardCodes.length) {
                     break first
                 }
@@ -66,13 +99,11 @@ const BoosterPS = () => {
                     <Grid.Column textAlign='center'>{j + 1 + index * 6}: {steamGuardCodes[j + index * 6]}</Grid.Column>
                 )
             }
-            console.log(localArray);
             array.push(
                 <Grid.Row>
                     {localArray}
                 </Grid.Row>
             )
-            console.log(array);
         }
         return (
             <Grid columns={6} divided>
@@ -103,6 +134,24 @@ const BoosterPS = () => {
         }
     }
 
+    const sendDataToOG = () => {
+        if (haveChanged && nowMmr != '') {
+            api.sendDataToOG(localStorage.getItem('token'), {
+                boosterLoggedIn,
+                nowMmr,
+                orderId: activeOrder.orderId
+            }, (res, err) => {
+                console.log(err, res?.data)
+                if (err)
+                    displayAlert(false, err?.response?.statusText, config.alertTimeout.normal)
+                else
+                displayAlert(true, 'Data send succesfully', config.alertTimeout.short)
+            }
+            )
+            // setHaveChanged(false)
+        } else { console.log('net') }
+    }
+
     let haveActiveOrder = activeOrder == 'blank' ? false : true
     if (!haveActiveOrder) {
         return (
@@ -130,6 +179,26 @@ const BoosterPS = () => {
                         {renderSteamGuardCodes()}
                     </div>
                 </Segment>
+                <Divider hidden />
+
+                <Grid columns={3}>
+                    <Grid.Row textAlign='center'>
+                        <Grid.Column>
+                            <Checkbox label='I have logged in account' checked={boosterLoggedIn}
+                                onChange={(e) => setBoosterLoggedIn(!boosterLoggedIn)} />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Input placeholder='now mmr' value={nowMmr} onChange={(e) => setNowMmr(e.target.value)} />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Button positive onClick={sendDataToOG}>
+                                Send data to order giver
+                            </Button>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+
+                <Divider hidden />
                 <div style={{ textAlign: 'center', marginTop: '20px' }}>
                     <Header>
                         My orders

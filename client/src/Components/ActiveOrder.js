@@ -50,6 +50,11 @@ const ActiveOrder = (props) => {
     const returnSGCToSend = (codes) => {
         return codes.split(' ');
     }
+
+    const returnIsOrderInProgress = () => {
+        return props.isOrderInProgress ? <div> booster started an order</div> :
+            <div> booster have not logged in yet</div>
+    }
     return (
         <Segment.Group>
             <Segment.Group horizontal>
@@ -99,6 +104,17 @@ const ActiveOrder = (props) => {
                     })
                     history.push(config.pages.personalSpace)
                 }}>Mark order as done</Button>
+                <Divider hidden />
+                <Grid columns={2}>
+                    <Grid.Row>
+                        <Grid.Column>
+                            {returnIsOrderInProgress()}
+                        </Grid.Column>
+                        <Grid.Column>
+                            now mmr: {props.nowMmr}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
                 {/* TODO: Add modal screen */}
             </div>
             <div style={{ paddingBottom: '0.55em' }} />

@@ -11,7 +11,6 @@ import { useHistory } from "react-router-dom";
 
 
 const OrderCard = (props) => {
-    console.log(props);
     const status = props.active ? 'active' : 'done'
     let dateTaken
     if (props.dateTaken) {
@@ -33,6 +32,9 @@ const OrderCard = (props) => {
             return null
         }
     }
+    const returnStatus = () =>{
+        return !props.notShowDone? <Segment>Status: {status}</Segment> : null
+    }
     return (
         <div className='order'>
             <Segment.Group horizontal>
@@ -41,7 +43,7 @@ const OrderCard = (props) => {
                 <Segment>from: {props.from}</Segment>
                 <Segment>to: {props.to}</Segment>
                 <Segment>payment: {props.payment} rub</Segment>
-                <Segment>Status: {status}</Segment>
+                {returnStatus()}
             </Segment.Group>
         </div>
     )

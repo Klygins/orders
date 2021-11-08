@@ -51,6 +51,7 @@ app.get('/login/verify', middleware.loggedIn, controller.verifyLogin)
 app.get('/get-orders', middleware.isBooster, ordersController.getOrders)
 app.get('/get-profile', middleware.loggedIn, controller.getProfile)
 app.post('/mark-as-done', middleware.isOrderMadeByOG, ordersController.markOrderAsDone)
+app.post('/send-data-to-og', middleware.isBooster, ordersController.sendDataToOG)
 
 //-----------------------------END OF ROUTES-----------------------------
 

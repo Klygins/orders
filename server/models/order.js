@@ -13,9 +13,10 @@ const orderSchema = mongoose.Schema({
     paymentForBooster: Number,
     dateTaken: Date,
     dateDone: Date,
-    takenBy: String,
     steamGuardCodes: [],
     isOrderInProgress: Boolean,
+    boosterLoggedIn: Boolean,
+    nowMmr: Number
 })
 
 var OrderModel = mongoose.model('Order', orderSchema)

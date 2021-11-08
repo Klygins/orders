@@ -12,8 +12,6 @@ const Order = (props) => {
     const dispatch = useDispatch()
     const [open, setOpen] = useState(false)
 
-    console.log(props.dateDone);
-
     const displayAlert = (isBlue = true, text = 'placeholder', timeOutMS = 4000) => {
         dispatch(setAlert({
             alertVisiable: true, isAlertColorBlue: isBlue,

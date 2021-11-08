@@ -4,7 +4,6 @@ import { Button } from 'semantic-ui-react'
 const SwitchButtons = (props) => {
     switch (props.role) {
         case 0:
-            console.log(props.role, 'qwe');
             return (
                 <div style={{ marginLeft: '70px', width: '100%' }}>
                     <Button.Group >

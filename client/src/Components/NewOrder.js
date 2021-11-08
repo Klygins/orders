@@ -45,7 +45,7 @@ const NewOrder = () => {
                 console.log('err.response:', err.response);
 
                 displayAlert(false, err.response.statusText, config.alertTimeout.normal)
-            }
+            }//
             setmmrFrom("")
             setmmrTo("")
             settokens("")

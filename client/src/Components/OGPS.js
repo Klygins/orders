@@ -1,42 +1,52 @@
 import React, { useState, useEffect } from "react";
 import { Button, Divider, Grid, Header, Input, Segment } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux';
-
 import Alert from './Alert'
 import { setOrders } from '../slices/orderSlice'
 import { setAlert } from '../slices/alertSlice'
 import * as api from '../api/index'
 import config from "../config";
 import { useHistory } from "react-router-dom";
-
 import ActiveOrder from './ActiveOrder.js'
 import OrderCard from './OrderCard'
 import NotTakenOrder from './NotTakenOrder'
+import useInterval from "../resources/useInterval";
 
 /**
  * Component for Order Giver on Personal Space
  */
 const OGPS = () => {
-
-    const dispatch = useDispatch()
+    const [orders, setLocalOrders] = useState([])
 
     useEffect(() => {
+        requestOrders()
+    }, [])
+
+    const requestOrders = () => {
         api.getProfile(localStorage.getItem('token'), (res, err) => {
             if (err) console.log(err);
-            dispatch(setOrders(res.data))
+            // const profile = res.data
+            // const orders = profile.orders
+            // dispatch(setOrders(res.data))
+            setLocalOrders(res.data)
         })
-    }, [])
-    const orders = useSelector(state => state.orders.orders)
-    console.log('orders from state:', orders);
+    }
+
+    useInterval(requestOrders, 10 * 1000)
+
+    // const orders = useSelector(state => state.orders.orders)
+    // console.log('orders from state:', orders);
+
     const returnNotTakenOrders = () => {
         const notTakenOrders = []
         for (let index = 0; index < orders.length; index++) {
-            if (!orders[index].isOrderInProgress && orders[index].booster == 'n/a') {
+            const order = orders[index]
+            if (!order.isOrderInProgress && order.booster == 'n/a') {
                 notTakenOrders.push(
-                    <NotTakenOrder from={orders[index].mmrFrom} to={orders[index].mmrTo}
-                        price={orders[index].payment} steamGuardCodes={orders[index].steamGuardCodes}
-                        login={orders[index].steamLogin} password={orders[index].steamPassword}
-                        tokens={orders[index].tokens} lvl={orders[index].trophyLvl} _id={orders[index]._id} />
+                    <NotTakenOrder from={order.mmrFrom} to={order.mmrTo}
+                        price={order.payment} steamGuardCodes={order.steamGuardCodes}
+                        login={order.steamLogin} password={order.steamPassword}
+                        tokens={order.tokens} lvl={order.trophyLvl} _id={order._id} />
                 )
             }
         }
@@ -50,12 +60,14 @@ const OGPS = () => {
     const returnActiveOrders = () => {
         const activeOrders = []
         for (let index = 0; index < orders.length; index++) {
-            if (orders[index].isOrderInProgress) {
+            const order = orders[index]
+            if (order.isOrderInProgress) {
                 activeOrders.push(
-                    <ActiveOrder dateTaken={orders[index].dateTaken} from={orders[index].mmrFrom} to={orders[index].mmrTo}
-                        price={orders[index].payment} steamGuardCodes={orders[index].steamGuardCodes}
-                        login={orders[index].steamLogin} password={orders[index].steamPassword} boosterId={orders[index].boosterId}
-                        tokens={orders[index].tokens} lvl={orders[index].trophyLvl} _id={orders[index]._id} />
+                    <ActiveOrder dateTaken={order.dateTaken} from={order.mmrFrom} to={order.mmrTo}
+                        price={order.payment} steamGuardCodes={order.steamGuardCodes}
+                        login={order.steamLogin} password={order.steamPassword} boosterId={order.boosterId}
+                        tokens={order.tokens} lvl={order.trophyLvl} _id={order._id} boosterLoggedIn={order.boosterLoggedIn}
+                        nowMmr={order.nowMmr} />
                 )
             }
         }
@@ -65,23 +77,24 @@ const OGPS = () => {
             </div>
         )
     }
+    console.log(orders);
 
     const returnDoneOrders = () => {
         const doneOrders = []
 
         for (let index = 0; index < orders.length; index++) {
-            if (!orders[index].isOrderInProgress) {
+            const order = orders[index]
+            if (!order.isOrderInProgress) {
                 doneOrders.push(
-                    <OrderCard dateTaken={new Date(orders[index].dateTaken)} from={orders[index].mmrFrom} to={orders[index].mmrTo}
-                        price={orders[index].payment} />
+                    <OrderCard dateTaken={new Date(order.dateTaken)} dateDone={new Date(order.dateDone)} from={order.mmrFrom} to={order.mmrTo}
+                        payment={order.payment} notShowDone={true} />
                 )
-                console.log(orders[index]);
             }
         }
 
         return (
             <div style={{ width: '80%', marginLeft: '10%' }}>
-                {/* {doneOrders} */}
+                {doneOrders}
             </div>
         )
     }
@@ -95,9 +108,10 @@ const OGPS = () => {
             <Header textAlign='center'>Not taken orders</Header>
             <Divider hidden />
             {returnNotTakenOrders()}
-            {/* <Header textAlign='center'>Done orders</Header>
+            <Header textAlign='center'>Done orders</Header>
             <Divider hidden />
-            {returnDoneOrders()} */}
+            {returnDoneOrders()}
+            <Divider hidden />
         </div>
     )
 
