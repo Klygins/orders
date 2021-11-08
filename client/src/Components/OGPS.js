@@ -84,7 +84,7 @@ const OGPS = () => {
 
         for (let index = 0; index < orders.length; index++) {
             const order = orders[index]
-            if (!order.isOrderInProgress) {
+            if (!order.isOrderInProgress && order.dateTaken) {
                 doneOrders.push(
                     <OrderCard dateTaken={new Date(order.dateTaken)} dateDone={new Date(order.dateDone)} from={order.mmrFrom} to={order.mmrTo}
                         payment={order.payment} notShowDone={true} />

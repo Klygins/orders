@@ -96,12 +96,10 @@ const register = (req, res) => {
 
 const getProfile = (req, res) => {
     reqUsername = req.user
-    console.log(reqUsername);
     const boosterCase = () => {
         const ordersToReturn = []
         OrderModel.find({ booster: reqUsername }, (err, orders) => {
             if (err) console.log(err);
-            console.log(orders, config.percent);
             for (let index = 0; index < orders.length; index++) {
                 orders[index].payment = orders[index].payment * config.percent
                 ordersToReturn.push(orders[index])

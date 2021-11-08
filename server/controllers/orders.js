@@ -13,12 +13,12 @@ const sendDataToOG = (req, res) => {
                 nowMmr: req.body.nowMmr
             }
         }, (err, da) => {
-            if (err) {
+            if (err !== null || err) {
                 console.log(err); res.sendStatus(400)
             }
             else {
                 if (res) {
-                    console.log(da);
+                    console.log(da, err);
                     return res.sendStatus(200)
                 }
             }

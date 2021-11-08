@@ -50,9 +50,9 @@ const ActiveOrder = (props) => {
     const returnSGCToSend = (codes) => {
         return codes.split(' ');
     }
-
+    
     const returnIsOrderInProgress = () => {
-        return props.isOrderInProgress ? <div> booster started an order</div> :
+        return props.boosterLoggedIn ? <div> booster started an order</div> :
             <div> booster have not logged in yet</div>
     }
     return (
