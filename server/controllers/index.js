@@ -63,7 +63,7 @@ const register = (req, res) => {
     permittedIps.forEach((permitIp) => {
         if (ip.includes(permittedIps))
             isPermitted = true
-        else 
+        else
             console.log('ip not permitted:', ip)
     })
 
@@ -122,10 +122,12 @@ const getProfile = (req, res) => {
     UserModel.findOne({ username: reqUsername }, (err, user) => {
         if (err) console.log(err);
         else {
-            if (user.isBooster) {
-                boosterCase()
-            } else {
-                ogCase()
+            if (user) {
+                if (user.isBooster) {
+                    boosterCase()
+                } else {
+                    ogCase()
+                }
             }
         }
     })

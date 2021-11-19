@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const orderSchema = mongoose.Schema({
     createdBy: String,
-    tokens: Number,
-    trophyLvl: Number,
+    tokens: String,
+    trophyLvl: String,
     mmrFrom: Number,
     mmrTo: Number,
     steamLogin: String,

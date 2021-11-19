@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const config = require('../config');
 require('dotenv').config()
+const axios = require('axios')
 
 const sendDataToOG = (req, res) => {
     OrderModel.updateOne({ _id: req.body.orderId },
@@ -18,7 +19,7 @@ const sendDataToOG = (req, res) => {
             }
             else {
                 if (res) {
-                    console.log(da, err);
+                    console.log(`Booster ${req.user} send to og data:`, req.body)
                     return res.sendStatus(200)
                 }
             }
@@ -62,21 +63,22 @@ const createOrder = (req, res) => {
     })
     newOrder.save((err) => {
         if (err) return console.log('ERROR 47', err);
+        const botMessage =
+            `New order: ${newOrder.mmrFrom}-${newOrder.mmrTo} ` +
+            `tokens:${newOrder.tokens} trophy lvl: ${newOrder.trophyLvl} payment: ${newOrder.payment * config.percent} @everyone \n
+if u wanna take order go to https://dota-orders.ngrok.io/#/orders`
+        const discordJson = {
+            "content": botMessage,
+            "tts": "false"
+        }
+        axios({
+            method: "POST",
+            data: discordJson,
+            headers: config.discordHeaders,
+            url: config.discordUrl
+        })
         res.json('done!')
     })
-    // UserModel.findOne({ username: createdBy }, (err, user) => {
-    //     if (err) { console.log(err); }
-    //     if (user) {
-    //         user.orders.push({
-    //             createdBy, mmrFrom, mmrTo, tokens, trophyLvl, payment,
-    //             steamLogin: 'n/a', steamPassword: 'n/a', booster: 'n/a', steamGuardCodes: [], isOrderInProgress: false,
-    //             _id: newOrder._id
-    //         })
-    //         user.save((err) => {
-    //             if (err) console.log(err);
-    //         })
-    //     }
-    // })
 }
 
 const getOrders = (req, res) => {
@@ -90,13 +92,13 @@ const getOrders = (req, res) => {
                 array.push(activeOrders[index])
             }
         }
+        // console.log(`boooster ${req.user} is online`);
         return res.json(array)
     })
 }
 
 const markOrderAsDone = (req, res) => {
     const now = new Date()
-    console.log('order', req.body.orderId, 'done');
     OrderModel.updateOne({ _id: req.body.orderId },
         {
             $set: {
@@ -106,6 +108,7 @@ const markOrderAsDone = (req, res) => {
         }, (err, da) => {
             if (err) console.log(err);
             if (res) {
+                console.log(`Order ${req.body.orderId} marked as done`)
                 return res.sendStatus(200)
             }
         })
@@ -120,7 +123,12 @@ const updateOrderData = (req, res) => {
                     "steamPassword": req.body.steamPassword,
                     "steamGuardCodes": req.body.steamGuardCodes
                 }
-            }, (err, res) => { console.log(err, res); })
+            }, (err, res) => {
+                if (err) console.log(err)
+                else {
+                    console.log(`New data for order ${req.body._id}:`, req.body)
+                }
+            })
         res.sendStatus(200)
     } else {
         res.sendStatus(400)
@@ -136,6 +144,7 @@ const deleteOrder = (req, res) => {
         if (order) {
             OrderModel.remove({ _id: orderId }, function (err) {
                 if (!err) {
+                    console.log(`order ${order.mmrFrom}-${order.mmrTo} created by ${createdBy} deleted`)
                     res.json('deleted succesfully')
                 }
                 else {
@@ -149,7 +158,6 @@ const deleteOrder = (req, res) => {
 const takeOrder = (req, res) => {
     const booster = req.user
     const orderId = req.body.orderId
-    console.log(orderId);
     const now = new Date()
     OrderModel.updateOne({ _id: orderId },
         {
@@ -161,6 +169,7 @@ const takeOrder = (req, res) => {
         }, (err, mod) => {
             if (err) console.log(err);
             else {
+                console.log(`booster ${booster} takes order ${orderId}`);
                 return res.json('))))')
             }
         })

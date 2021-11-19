@@ -72,7 +72,6 @@ const boosterHaveOrder = (req, res, next) => {
                     haveActiveOrder = true
                 }
             }
-            console.log(haveActiveOrder);
             if (haveActiveOrder) {
                 res.sendStatus(403)
             } else {
