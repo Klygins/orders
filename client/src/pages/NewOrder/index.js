@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Button, Grid, Input } from 'semantic-ui-react'
 import { useDispatch } from "react-redux";
 
-import Alert from '../../Components/Alert'
+import NewOrderComponent from './NewOrder'
 import { setAlert } from "../../slices/alertSlice";
 import * as api from '../../api/index.js'
 
@@ -36,7 +35,7 @@ const NewOrder = () => {
             mmrTo,
             tokens,
             trophyLvl,
-            payment: payment
+            payment
         }
         api.createOrder(localStorage.getItem('token'), newObject, (res, err) => {
             if (res && res !== false && res.status == 200) {
@@ -56,45 +55,9 @@ const NewOrder = () => {
     }
 
     return (
-        <div style={{ marginLeft: '20%', width: '60%' }}>
-            <Alert />
-            <h3 style={{ textAlign: 'center', marginTop: '20px', marginBottom: '30px' }}>Create new order</h3>
-            <Grid columns={3} divided>
-                <Grid.Row>
-                    <Grid.Column>
-                        <div style={{ textAlign: 'center' }}>
-                            <Input placeholder='From' id='mmr-from' value={mmrFrom} onChange={(e) => setmmrFrom(e.target.value)} />
-                        </div>
-                    </Grid.Column>
-                    <Grid.Column>
-                        <div style={{ textAlign: 'center' }}>
-                            <Input placeholder='to' id='mmr-to' value={mmrTo} onChange={(e) => setmmrTo(e.target.value)} />
-                        </div>
-                    </Grid.Column>
-                    <Grid.Column>
-                        <div style={{ textAlign: 'center' }}>
-                            <Input placeholder='payment' id='payment' value={payment} onChange={(e) => setpayment(e.target.value)} />
-                        </div>
-                    </Grid.Column>
-                </Grid.Row>
-
-                <Grid.Row>
-                    <Grid.Column>
-                        <div style={{ textAlign: 'center' }}>
-                            <Input placeholder='tokens' id='tokens' value={tokens} onChange={(e) => settokens(e.target.value)} />
-                        </div>
-                    </Grid.Column>
-                    <Grid.Column>
-                        <div style={{ textAlign: 'center' }}>
-                            <Input placeholder='account lvl' id='lvl' value={trophyLvl} onChange={(e) => settrophyLvl(e.target.value)} />
-                        </div>
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
-            <div style={{ textAlign: 'center', marginTop: "40px" }}>
-                <Button positive onClick={createOrder}>Create</Button>
-            </div>
-        </div>
+        <NewOrderComponent createOrder={createOrder} mmrFrom={mmrFrom} setmmrFrom={setmmrFrom}
+        mmrTo={mmrTo} setmmrTo={setmmrTo} payment={payment} setpayment={setpayment} tokens={tokens}
+        settokens={settokens} trophyLvl={trophyLvl} settrophyLvl={settrophyLvl} />
     )
 }
 
