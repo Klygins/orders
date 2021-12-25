@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Button, Divider, Header, Input, Transition } from "semantic-ui-react";
 
-import Alert from './Alert'
-import { setRole } from '../slices/roleSlice'
-import { setAlert } from "../slices/alertSlice";
-import * as api from '../api/index'
+import Alert from '../../Components/Alert'
+import { setRole } from '../../slices/roleSlice'
+import { setAlert } from "../../slices/alertSlice";
+import * as api from '../../api/index'
 import { useHistory } from "react-router-dom";
-import config from '../config'
+import config from '../../config'
+import Home from "./Home";
 
 const HomePage = () => {
-
     const [isLoaded, setIsLoaded] = useState(false)
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -84,24 +83,8 @@ const HomePage = () => {
                         <h1>Loading...</h1>
                     </div>)
                     : (
-                        <div>
-                            <div style={{ textAlign: 'center' }}>
-                                <Divider hidden />
-                                <Header>Rules</Header>
-                                <div style={{ width: '50%', marginLeft: '25%' }}>Deadline is 150 mmr per day, once you log in account turn on invisible mode and only then open dota, after that you should send start screen(mmr).
-                                </div>
-                                <div style={{ width: '50%', marginLeft: '25%' }}>
-                                    Every 150 mmr screenshot with mmr must be sent, when you want to billout write me in discord: <strong>{config.myDiscord}</strong></div>
-                            </div>
-
-                            <div style={{ marginTop: '40px', textAlign: 'center' }}>
-                                <Input placeholder='username' id='username' value={username} onChange={(e) => setUsername(e.target.value)} />
-                                <Divider hidden />
-                                <Input placeholder='password' type='password' id='password' value={password} onChange={(e) => setPassword(e.target.value)} />
-                                <Divider hidden />
-                                <Button positive onClick={login} content={'Log in'} />
-                            </div>
-                        </div>
+                        <Home username={username} setUsername={setUsername} 
+                        password={password} setPassword={setPassword} login={login} />
                     )
 
             }

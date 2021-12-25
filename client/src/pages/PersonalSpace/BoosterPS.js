@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Button, Divider, Grid, Header, Input, Segment, Checkbox } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux';
-import Alert from './Alert'
-import { setOrders } from '../slices/orderSlice'
-import { setAlert } from '../slices/alertSlice'
-import * as api from '../api/index'
-import config from "../config";
+import Alert from '../../Components/Alert'
+import { setOrders } from '../../slices/orderSlice'
+import { setAlert } from '../../slices/alertSlice'
+import * as api from '../../api/index'
+import config from "../../config";
 import { useHistory } from "react-router-dom";
 import BoosterTimer from './BoosterTimer'
 import OrderCard from "./OrderCard";
-import useInterval from "../resources/useInterval";
-import { areEqual } from "../resources/hashFunctions";
+import useInterval from "../../resources/useInterval";
+import { areEqual } from "../../resources/hashFunctions";
 
 
 /**

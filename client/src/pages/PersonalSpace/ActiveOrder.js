@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import * as api from '../api/index'
-import { setAlert } from '../slices/alertSlice'
+import * as api from '../../api/index'
+import { setAlert } from '../../slices/alertSlice'
 import { useHistory } from "react-router-dom";
 import { Button, Divider, Grid, Header, Input, Segment } from 'semantic-ui-react'
-import config from '../config';
-
-
+import config from '../../config';
 const ActiveOrder = (props) => {
     const dispatch = useDispatch()
     const displayAlert = (isBlue = true, text = 'placeholder', timeOutMS = 4000) => {
@@ -27,7 +25,6 @@ const ActiveOrder = (props) => {
         <span>
             {dateObj.getDate()}.{dateObj.getMonth()} {dateObj.getHours()}:{dateObj.getMinutes()} (GMT+7)
         </span>
-
     useEffect(() => {
         if (props.login == 'wait for it') {
             login = ''
@@ -40,17 +37,14 @@ const ActiveOrder = (props) => {
             password = props.password
         }
     }, [])
-
     let history = useHistory();
-
     const logId = props._id + 'login'
     const pasId = props._id + 'password'
     const sgcId = props._id + 'steamGuardCodes'
-
     const returnSGCToSend = (codes) => {
         return codes.split(' ');
     }
-    
+
     const returnIsOrderInProgress = () => {
         return props.boosterLoggedIn ? <div> booster started an order</div> :
             <div> booster have not logged in yet</div>
@@ -61,7 +55,7 @@ const ActiveOrder = (props) => {
                 <Segment>Date taken: {date}</Segment>
                 <Segment>From: {props.from}</Segment>
                 <Segment>To: {props.to}</Segment>
-                <Segment>Price: {props.price}</Segment>
+                <Segment>payment: {props.payment}</Segment>
                 <Segment>Lvl: {props.lvl}</Segment>
                 <Segment>Tokens: {props.tokens}</Segment>
             </Segment.Group>
@@ -121,5 +115,4 @@ const ActiveOrder = (props) => {
         </Segment.Group>
     )
 }
-
 export default ActiveOrder

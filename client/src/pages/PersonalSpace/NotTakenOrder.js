@@ -2,10 +2,10 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Divider, Grid, Header, Input, Segment } from 'semantic-ui-react'
 
-import config from "../config";
-import { setAlert } from '../slices/alertSlice'
+import config from "../../config";
+import { setAlert } from '../../slices/alertSlice'
 import { useHistory } from "react-router-dom";
-import * as api from '../api'
+import * as api from '../../api'
 
 
 const NotTakenOrder = (props) => {
@@ -29,7 +29,7 @@ const NotTakenOrder = (props) => {
         <Segment.Group horizontal>
             <Segment><div style={{ verticalAlign: 'middle' }}>From: {props.from}</div></Segment>
             <Segment>To: {props.to}</Segment>
-            <Segment>Price: {props.price}</Segment>
+            <Segment>payment: {props.payment}</Segment>
             <Segment>Lvl: {props.lvl}</Segment>
             <Segment>Tokens: {props.tokens}</Segment>
             <div style={{ paddingTop: '0.5em', paddingRight: '1em' }}><Button size='small' negative

@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { Segment, Modal, Button, Transition } from 'semantic-ui-react'
+import { Segment, Modal, Button } from 'semantic-ui-react'
 import { useDispatch } from "react-redux";
-
-import { setAlert } from "../slices/alertSlice";
-import * as api from '../api/index'
 import { useHistory } from "react-router-dom";
 
-import config from '../config'
+import { setAlert } from "../../slices/alertSlice";
+import * as api from '../../api/index'
+import config from '../../config'
 
 const Order = (props) => {
     const dispatch = useDispatch()

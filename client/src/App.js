@@ -4,14 +4,14 @@ import {
     Switch,
     Route
 } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 
-import HomePage from './Components/HomePage'
-import Orders from './Components/Orders'
-import NewOrder from './Components/NewOrder'
+import HomePage from './pages/Home/'
+import Orders from './pages/Orders'
+import NewOrder from './pages/NewOrder/'
 import Header from './Components/Header'
-import PersonalSpace from './Components/PersonalSpace'
+import PersonalSpace from './pages/PersonalSpace/PersonalSpace'
 import * as api from './api/index'
 import { setRole } from './slices/roleSlice'
 import config from './config';

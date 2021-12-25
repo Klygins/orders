@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Button, Divider, Grid, Header, Input, Segment } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux';
-import Alert from './Alert'
-import { setOrders } from '../slices/orderSlice'
-import { setAlert } from '../slices/alertSlice'
-import * as api from '../api/index'
-import config from "../config";
+import Alert from '../../Components/Alert'
+import { setOrders } from '../../slices/orderSlice'
+import { setAlert } from '../../slices/alertSlice'
+import * as api from '../../api/index'
+import config from "../../config";
 import { useHistory } from "react-router-dom";
 import ActiveOrder from './ActiveOrder.js'
 import OrderCard from './OrderCard'
 import NotTakenOrder from './NotTakenOrder'
-import useInterval from "../resources/useInterval";
+import useInterval from "../../resources/useInterval";
 
 /**
  * Component for Order Giver on Personal Space
@@ -44,7 +44,7 @@ const OGPS = () => {
             if (!order.isOrderInProgress && order.booster == 'n/a') {
                 notTakenOrders.push(
                     <NotTakenOrder from={order.mmrFrom} to={order.mmrTo}
-                        price={order.payment} steamGuardCodes={order.steamGuardCodes}
+                        payment={order.payment} steamGuardCodes={order.steamGuardCodes}
                         login={order.steamLogin} password={order.steamPassword}
                         tokens={order.tokens} lvl={order.trophyLvl} _id={order._id} />
                 )
@@ -64,7 +64,7 @@ const OGPS = () => {
             if (order.isOrderInProgress) {
                 activeOrders.push(
                     <ActiveOrder dateTaken={order.dateTaken} from={order.mmrFrom} to={order.mmrTo}
-                        price={order.payment} steamGuardCodes={order.steamGuardCodes}
+                        payment={order.payment} steamGuardCodes={order.steamGuardCodes}
                         login={order.steamLogin} password={order.steamPassword} boosterId={order.boosterId}
                         tokens={order.tokens} lvl={order.trophyLvl} _id={order._id} boosterLoggedIn={order.boosterLoggedIn}
                         nowMmr={order.nowMmr} />

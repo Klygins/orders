@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Button, Grid, Input, Transition } from 'semantic-ui-react'
+import { Button, Grid, Input } from 'semantic-ui-react'
 import { useDispatch } from "react-redux";
 
-import Alert from './Alert'
-import { setAlert } from "../slices/alertSlice";
-import * as api from '../api/index.js'
+import Alert from '../../Components/Alert'
+import { setAlert } from "../../slices/alertSlice";
+import * as api from '../../api/index.js'
 
-import config from "../config";
+import config from "../../config";
 
 const NewOrder = () => {
     const dispatch = useDispatch()
@@ -15,7 +15,7 @@ const NewOrder = () => {
     const [mmrTo, setmmrTo] = useState("")
     const [tokens, settokens] = useState("")
     const [trophyLvl, settrophyLvl] = useState("")
-    const [price, setprice] = useState("")
+    const [payment, setpayment] = useState("")
 
     const displayAlert = (isBlue = true, text = 'placeholder', timeOutMS = 4000) => {
         dispatch(setAlert({
@@ -36,7 +36,7 @@ const NewOrder = () => {
             mmrTo,
             tokens,
             trophyLvl,
-            payment: price
+            payment: payment
         }
         api.createOrder(localStorage.getItem('token'), newObject, (res, err) => {
             if (res && res !== false && res.status == 200) {
@@ -51,7 +51,7 @@ const NewOrder = () => {
             settokens("")
             settrophyLvl("")
             settrophyLvl("")
-            setprice("")
+            setpayment("")
         })
     }
 
@@ -73,7 +73,7 @@ const NewOrder = () => {
                     </Grid.Column>
                     <Grid.Column>
                         <div style={{ textAlign: 'center' }}>
-                            <Input placeholder='price' id='price' value={price} onChange={(e) => setprice(e.target.value)} />
+                            <Input placeholder='payment' id='payment' value={payment} onChange={(e) => setpayment(e.target.value)} />
                         </div>
                     </Grid.Column>
                 </Grid.Row>

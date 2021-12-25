@@ -1,28 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Button, Header } from 'semantic-ui-react'
-import Alert from './Alert'
-import * as api from '../api/index.js'
+import { Header } from 'semantic-ui-react'
+
+import Alert from '../../Components/Alert'
+import * as api from '../../api/index.js'
 import Order from './Order'
-import useInterval from '../resources/useInterval'
-import { areEqual } from "../resources/hashFunctions";
-import { useDispatch } from "react-redux";
-import newOrderSound from '../sound/newOrder.mp3';
+import useInterval from '../../resources/useInterval'
+import { areEqual } from "../../resources/hashFunctions";
+import newOrderSound from '../../sound/newOrder.mp3';
 
 const Orders = () => {
     const audio = new Audio(newOrderSound);
-
     const [orders, setOrders] = useState([])
-
     useEffect(() => {
         getOrders()
     }, [])
-
     const getOrders = () => {
         const token = localStorage.getItem('token')
         if (token) {
             api.getOrders(token, (res, err) => {
                 console.log('We got res from getOrders:', res, err);
-
                 if (!areEqual(orders, res.data) && orders.length !== 0) {
                     audio.play()
                 }
@@ -34,17 +30,15 @@ const Orders = () => {
             })
         }
     }
-
     useInterval(getOrders, 10 * 1000)
-
     const renderOrders = () => {
         const array = []
-        for (let index = 0; index < orders.length; index++) {
+        orders.forEach((order) => {
             array.push(
-                <Order from={orders[index].mmrFrom} to={orders[index].mmrTo} tokens={orders[index].tokens}
-                    payment={orders[index].payment} lvl={orders[index].trophyLvl} id={orders[index]._id} />
+                <Order from={order.mmrFrom} to={order.mmrTo} tokens={order.tokens}
+                    payment={order.payment} lvl={order.trophyLvl} id={order._id} />
             )
-        }
+        })
         return array
     }
     return (
@@ -57,5 +51,4 @@ const Orders = () => {
         </div>
     )
 }
-
 export default Orders
