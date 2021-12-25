@@ -23,10 +23,10 @@ const isOrderMadeByOG = (req, res, next) => {
         UserModel.findOne({ 'username': user }, (err, userdb) => {
             if (err)
                 console.log(err);
-            
-            if (userdb.isBooster) 
+
+            if (userdb.isBooster)
                 return res.sendStatus(403)
-                
+
             else {
                 req.body.createdBy = user
                 next()
@@ -80,4 +80,18 @@ const boosterHaveOrder = (req, res, next) => {
         }
     })
 }
-module.exports = { loggedIn, isOrderMadeByOG, isBooster, boosterHaveOrder }
+
+const isRequestFromLocalhost = (req, res, next) => {
+    if (req.connection.remoteAddress == '::1' || req.connection.remoteAddress == '::ffff:127.0.0.1') {
+        next()
+    }
+    else res.sendStatus(404)
+}
+
+module.exports = {
+    loggedIn,
+    isOrderMadeByOG,
+    isBooster,
+    boosterHaveOrder,
+    isRequestFromLocalhost
+}

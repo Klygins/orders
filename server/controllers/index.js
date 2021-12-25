@@ -57,19 +57,6 @@ const login = (req, res) => {
 }
 
 const register = (req, res) => {
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    const permittedIps = ['127.0.0.1']
-    var isPermitted = false
-    permittedIps.forEach((permitIp) => {
-        if (ip.includes(permittedIps))
-            isPermitted = true
-        else
-            console.log('ip not permitted:', ip)
-    })
-
-    if (!isPermitted)
-        return res.sendStatus(404)
-
     const username = req.body.username
     const password = req.body.password
     const isBooster = req.body.isBooster

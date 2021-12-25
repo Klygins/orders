@@ -8,8 +8,6 @@ const app = express()
 const middleware = require('./middlewares.js')
 const controller = require('./controllers/index')
 const ordersController = require('./controllers/orders')
-// const ordersController = require('./controllers/orders')
-// const accountsController = require('./controllers/accounts')
 
 console.log('General setup...')
 const db_options = { useNewUrlParser: true, useUnifiedTopology: true }
@@ -41,17 +39,21 @@ console.log('Adding routes...')
 //-----------------------------ROUTES-----------------------------
 
 app.post('/login', controller.login)
-app.post('/register', controller.register)
-app.post('/create-order', middleware.isOrderMadeByOG, ordersController.createOrder)
+app.post('/register', middleware.isRequestFromLocalhost,controller.register)
+
 app.get('/get-role', controller.getRole)
-app.post('/take-order', middleware.isBooster, middleware.boosterHaveOrder, ordersController.takeOrder)
-app.post('/delete-order', middleware.isOrderMadeByOG, ordersController.deleteOrder)
-app.post('/update-order-data', ordersController.updateOrderData)
-app.get('/login/verify', middleware.loggedIn, controller.verifyLogin)
-app.get('/get-orders', middleware.isBooster, ordersController.getOrders)
 app.get('/get-profile', middleware.loggedIn, controller.getProfile)
+app.get('/login/verify', middleware.loggedIn, controller.verifyLogin)
+
+app.post('/create-order', middleware.isOrderMadeByOG, ordersController.createOrder)
+app.post('/delete-order', middleware.isOrderMadeByOG, ordersController.deleteOrder)
 app.post('/mark-as-done', middleware.isOrderMadeByOG, ordersController.markOrderAsDone)
+app.post('/update-order-data', middleware.isOrderMadeByOG,ordersController.updateOrderData)
+
+app.post('/take-order', middleware.isBooster, middleware.boosterHaveOrder, ordersController.takeOrder)
+app.get('/get-orders', middleware.isBooster, ordersController.getOrders)
 app.post('/send-data-to-og', middleware.isBooster, ordersController.sendDataToOG)
+
 
 //-----------------------------END OF ROUTES-----------------------------
 
