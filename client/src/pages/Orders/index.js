@@ -11,9 +11,11 @@ import newOrderSound from '../../sound/newOrder.mp3';
 const Orders = () => {
     const audio = new Audio(newOrderSound);
     const [orders, setOrders] = useState([])
+
     useEffect(() => {
         getOrders()
     }, [])
+
     const getOrders = () => {
         const token = localStorage.getItem('token')
         if (token) {
@@ -30,7 +32,9 @@ const Orders = () => {
             })
         }
     }
+
     useInterval(getOrders, 10 * 1000)
+
     const renderOrders = () => {
         const array = []
         orders.forEach((order) => {
@@ -41,13 +45,14 @@ const Orders = () => {
         })
         return array
     }
+
     return (
         <div>
             <Alert />
-            <div style={{ textAlign: 'center', marginTop: '20px' }}><Header>Active orders list</Header></div>
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <Header>Active orders list</Header>
+            </div>
             {renderOrders()}
-            {/* <Order from='0' to='2000' tokens='20' payment='5000' lvl='90' />
-            <Order from='6000' to='6200' tokens='20' payment='2000' lvl='90' /> */}
         </div>
     )
 }
