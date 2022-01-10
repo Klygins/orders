@@ -1,5 +1,6 @@
 require('dotenv').config()
 const axios = require('axios')
+const config = require('../config')
 
 const sendMessage = () => {
     return new Promise((resolve, reject) => {
