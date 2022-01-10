@@ -53,7 +53,7 @@ const createOrder = (req, res) => {
     })
     newOrder.save((err) => {
         if (err) return console.log('ERROR in createOrder:', err);
-        utils.sendMessage().catch(
+        utils.sendMessage(newOrder).catch(
             error => console.log('error in sendMessage:', error)
         )
         res.json('done!')
